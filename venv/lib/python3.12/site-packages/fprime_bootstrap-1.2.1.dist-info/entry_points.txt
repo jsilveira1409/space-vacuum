@@ -1,0 +1,2 @@
+[console_scripts]
+fprime-bootstrap = fprime_bootstrap.__main__:main
