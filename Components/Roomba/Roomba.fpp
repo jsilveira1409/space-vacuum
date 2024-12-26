@@ -34,13 +34,36 @@ module Components {
 
         @ Drive Roomba
         async command Drive(
-            speed  : U16,
-            radius : U16
+            speed  : I16,
+            radius : I16
         ) opcode 10
 
         @ Enable User Start of Roomba
         async command Start opcode 11
 
+        @ Roomba Drive Forward
+        async command Forward opcode 12
+        
+        @ Roomba Drive Backward
+        async command Backward opcode 13
+
+        @ Roomba Right Turn
+        async command  Right opcode 14
+
+        @ Roomba Left Turn
+        async command Left opcode 15
+
+        @ Roomba Stop
+        async command Stop opcode 16
+
+        @ Open/Close Lid, dispense food
+        async command Dispense(
+            $state:bool
+            ) opcode 17
+
+
+        
+        
         @ Roomba's Battery Voltage in microvolts
         telemetry BumpWheeldrops: U8
         
@@ -114,6 +137,15 @@ module Components {
 
         @ Data going to the underlying driver
         output port drvDataOut: Drv.ByteStreamSend
+
+        @ Ready signal when driver is connected
+        sync input port dispenserDrvConnected: Drv.ByteStreamReady
+
+        @ Data received from driver
+        sync input port dispenserDrvDataIn: Drv.ByteStreamRecv
+
+        @ Data going to the underlying driver
+        output port dispenserDrvDataOut: Drv.ByteStreamSend
 
         output port allocate: Fw.BufferGet
 

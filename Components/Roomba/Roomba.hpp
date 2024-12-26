@@ -8,6 +8,7 @@
 #define Components_Roomba_HPP
 
 #include "Components/Roomba/RoombaComponentAc.hpp"
+#include <iostream>
 
 namespace Components {
 
@@ -31,6 +32,12 @@ namespace Components {
       SENSORS = 142,
       DOCK = 143
     };
+
+    enum DispenserCmd{
+      OPEN = 250,
+      CLOSE = 80
+    };
+
     // ----------------------------------------------------------------------
     // Component construction and destruction
     // ----------------------------------------------------------------------
@@ -46,6 +53,23 @@ namespace Components {
     // ----------------------------------------------------------------------
     // Handler implementations for user-defined typed input ports
     // ----------------------------------------------------------------------
+
+    //! Handler implementation for dispenserDrvConnected
+    //!
+    //! Ready signal when driver is connected
+    void dispenserDrvConnected_handler(
+        FwIndexType portNum //!< The port number
+    ) override;
+
+    //! Handler implementation for dispenserDrvDataIn
+    //!
+    //! Data received from driver
+    void dispenserDrvDataIn_handler(
+        FwIndexType portNum, //!< The port number
+        Fw::Buffer& recvBuffer,
+        const Drv::RecvStatus& recvStatus
+    ) override;
+
 
     //! Handler implementation for drvConnected
     //!
@@ -147,8 +171,8 @@ namespace Components {
     //! Drive Roomba
     void Drive_cmdHandler(FwOpcodeType opCode,  //!< The opcode
       U32 cmdSeq,           //!< The command sequence number
-      U16 speed,
-      U16 radius) override;
+      I16 speed,
+      I16 radius) override;
 
     //! Handler implementation for command Start
     //!
@@ -156,6 +180,61 @@ namespace Components {
     void Start_cmdHandler(FwOpcodeType opCode,  //!< The opcode
       U32 cmdSeq            //!< The command sequence number
     ) override;
+
+    //! Handler implementation for command Forward
+    //!
+    //! Roomba Drive Forward
+    void Forward_cmdHandler(
+        FwOpcodeType opCode, //!< The opcode
+        U32 cmdSeq //!< The command sequence number
+    ) override;
+
+    //! Handler implementation for command Backward
+    //!
+    //! Roomba Drive Backward
+    void Backward_cmdHandler(
+        FwOpcodeType opCode, //!< The opcode
+        U32 cmdSeq //!< The command sequence number
+    ) override;
+
+    //! Handler implementation for command Right
+    //!
+    //! Roomba Right Turn
+    void Right_cmdHandler(
+        FwOpcodeType opCode, //!< The opcode
+        U32 cmdSeq //!< The command sequence number
+    ) override;
+
+    //! Handler implementation for command Left
+    //!
+    //! Roomba Left Turn
+    void Left_cmdHandler(
+        FwOpcodeType opCode, //!< The opcode
+        U32 cmdSeq //!< The command sequence number
+    ) override;
+
+
+    //! Handler implementation for command Stop
+    //!
+    //! Roomba Stop
+    void Stop_cmdHandler(
+        FwOpcodeType opCode, //!< The opcode
+        U32 cmdSeq //!< The command sequence number
+    ) override;
+
+
+    //! Handler implementation for command Dispense
+    //!
+    //! Open/Close Lid, dispense food
+    void Dispense_cmdHandler(
+        FwOpcodeType opCode, //!< The opcode
+        U32 cmdSeq, //!< The command sequence number
+        bool state
+    ) override;
+
+
+
+    void parseSensors(const U8* data);
   };
 
 }  // namespace Components

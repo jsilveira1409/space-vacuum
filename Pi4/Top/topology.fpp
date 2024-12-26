@@ -44,6 +44,7 @@ module Pi4 {
 
     instance roombaDriver
     instance roomba
+    instance dispenserDriver
 
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
@@ -138,13 +139,25 @@ module Pi4 {
 
     connections Pi4 {
       roombaDriver.deallocate -> bufferManager.bufferSendIn
-      rateGroup3.RateGroupMemberOut[3] -> roomba.run
       roombaDriver.allocate -> bufferManager.bufferGetCallee
       roombaDriver.$recv -> roomba.drvDataIn
       roombaDriver.ready -> roomba.drvConnected
+
+      dispenserDriver.deallocate -> bufferManager.bufferSendIn
+      dispenserDriver.allocate -> bufferManager.bufferGetCallee
+      dispenserDriver.$recv -> roomba.dispenserDrvDataIn
+      dispenserDriver.ready -> roomba.dispenserDrvConnected
+
+      
+      
       roomba.drvDataOut -> roombaDriver.$send
+      roomba.dispenserDrvDataOut -> dispenserDriver.$send
+      
+      rateGroup3.RateGroupMemberOut[3] -> roomba.run
       roomba.allocate -> bufferManager.bufferGetCallee
       roomba.deallocate ->bufferManager.bufferSendIn
+
+
     }
 
   }

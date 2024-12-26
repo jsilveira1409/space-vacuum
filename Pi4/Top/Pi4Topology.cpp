@@ -32,7 +32,7 @@ Svc::FprimeDeframing deframing;
 Svc::ComQueue::QueueConfigurationTable configurationTable;
 
 // The reference topology divides the incoming clock signal (1Hz) into sub-signals: 1Hz, 1/2Hz, and 1/4Hz with 0 offset
-Svc::RateGroupDriver::DividerSet rateGroupDivisorsSet{{{1, 0}, {2, 0}, {4, 0}}};
+Svc::RateGroupDriver::DividerSet rateGroupDivisorsSet{{{1, 0}, {2, 0}, {30, 0}}};
 
 // Rate groups may supply a context token to each of the attached children whose purpose is set by the project. The
 // reference topology sets each token to zero as these contexts are unused in this project.
@@ -169,12 +169,15 @@ void setupTopology(const TopologyState& state) {
     {
         std::cout << "UART opened " << std::endl;
         roombaDriver.start();
-
     }
     else
     {
         std::cout << "UART did not open " << std::endl;
     }
+    
+    Os::TaskString name("DispenserTask");
+    dispenserDriver.configure("0.0.0.0", 50054);
+    dispenserDriver.start(name, true, COMM_PRIORITY, Default::STACK_SIZE);
 }
 
 // Variables used for cycle simulation
@@ -211,7 +214,8 @@ void teardownTopology(const TopologyState& state) {
     // Other task clean-up.
     comDriver.stop();
     (void)comDriver.join();
-
+    
+    dispenserDriver.stop();
     (void)roombaDriver.join();
 
     // Resource deallocation

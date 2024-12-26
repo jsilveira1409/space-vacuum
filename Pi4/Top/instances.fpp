@@ -127,5 +127,7 @@ module Pi4 {
   instance comStub: Svc.ComStub base id 0x4B00
   
   instance roombaDriver: Drv.LinuxUartDriver base id 0x4C00
+  
+  instance dispenserDriver: Drv.TcpServer base id 0x4D00
 
 }
