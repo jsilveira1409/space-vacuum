@@ -6,6 +6,7 @@ build-fprime-*
 *-template
 *.template.cpp
 *.template.hpp
+yolo11n.pt
 
 # Misc
 /venv/
